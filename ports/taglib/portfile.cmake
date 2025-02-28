@@ -1,8 +1,8 @@
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO taglib/taglib
-    REF v1.13
-    SHA512 b6e3253d158b41173073c0da1915f5e4a3de947db918660817cb1c755fba7e3723ea1a335fbbc30b0dcf942348a471b493fe2ce1d52d1a808578edee14e1bfc7
+    REF "v${VERSION}"
+    SHA512 79f333dbe8ed44076010e33803e3418410516df4b70203962bbefea81ce0a6989a54a9791022488e64f1876573580cbe93920da4b2a7277d6a3f48c946e518fc
     HEAD_REF master
 )
 
@@ -19,15 +19,16 @@ vcpkg_cmake_configure(
 )
 vcpkg_cmake_install()
 vcpkg_fixup_pkgconfig()
+vcpkg_cmake_config_fixup(CONFIG_PATH lib/cmake/taglib)
 
 set(pcfile "${CURRENT_PACKAGES_DIR}/lib/pkgconfig/taglib.pc")
 if(EXISTS "${pcfile}")
-    vcpkg_replace_string("${pcfile}" "Requires: " "Requires: zlib")
+    vcpkg_replace_string("${pcfile}" "Requires: " "Requires: zlib" IGNORE_UNCHANGED)
     vcpkg_replace_string("${pcfile}" " -lz" "")
 endif()
 set(pcfile "${CURRENT_PACKAGES_DIR}/debug/lib/pkgconfig/taglib.pc")
 if(EXISTS "${pcfile}")
-    vcpkg_replace_string("${pcfile}" "Requires: " "Requires: zlib")
+    vcpkg_replace_string("${pcfile}" "Requires: " "Requires: zlib" IGNORE_UNCHANGED)
     vcpkg_replace_string("${pcfile}" " -lz" "")
 endif()
 
@@ -47,4 +48,3 @@ vcpkg_copy_pdbs()
 file(COPY "${SOURCE_PATH}/COPYING.LGPL" DESTINATION "${CURRENT_PACKAGES_DIR}/share/taglib")
 file(COPY "${SOURCE_PATH}/COPYING.MPL" DESTINATION "${CURRENT_PACKAGES_DIR}/share/taglib")
 file(RENAME "${CURRENT_PACKAGES_DIR}/share/taglib/COPYING.LGPL" "${CURRENT_PACKAGES_DIR}/share/taglib/copyright")
-file(INSTALL "${CMAKE_CURRENT_LIST_DIR}/usage" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}")

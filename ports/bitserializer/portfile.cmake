@@ -1,11 +1,11 @@
 # All components of BitSerializer is "header only" except CSV archive
 vcpkg_check_linkage(ONLY_STATIC_LIBRARY)
 
-vcpkg_from_bitbucket(
+vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
-    REPO Pavel_Kisliak/BitSerializer
-    REF 0.50
-    SHA512 d223e4487251e375b2f5d8b1dca9a3db3f5661c3eb308b12f019864e49d58fb0b7d45a45c3e7e232ba1d023adb1f9a3a287255099b205f57c6cade04167119d6
+    REPO PavelKisliak/BitSerializer
+    REF v0.75
+    SHA512 ae31f17a0b4e488892f676eafe94e2d43a381153b9179891a9d3a6380c7b3f12d29bc20b7be270a71305bc7c27b08395f6aa8a8be26c52934e148e7140d34d21
     HEAD_REF master
 )
 
@@ -16,10 +16,12 @@ vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
         "pugixml-archive"      BUILD_PUGIXML_ARCHIVE
         "rapidyaml-archive"    BUILD_RAPIDYAML_ARCHIVE
         "csv-archive"          BUILD_CSV_ARCHIVE
+        "msgpack-archive"      BUILD_MSGPACK_ARCHIVE
 )
 
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}"
+    DISABLE_PARALLEL_CONFIGURE
     OPTIONS
         ${FEATURE_OPTIONS}
 )
@@ -30,7 +32,7 @@ vcpkg_cmake_config_fixup()
 vcpkg_fixup_pkgconfig()
 
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
-if (NOT ${BUILD_CSV_ARCHIVE})
+if (NOT (${BUILD_CSV_ARCHIVE} OR ${BUILD_MSGPACK_ARCHIVE}))
     file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug")
 endif()
 

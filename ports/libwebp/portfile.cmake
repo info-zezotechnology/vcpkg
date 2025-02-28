@@ -2,13 +2,12 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO webmproject/libwebp
     REF "v${VERSION}"
-    SHA512 9131c256f78fa09c3fc569b0b3657f62b06466cfa7b88b81cbae68f0a37f7a36ac6b0fe257b150406e15d623eda288c46ee97ee023aebe7dec25ca0a6d4ba85c
+    SHA512 a922cb84e147f1aeaaac9ff4c6000ebad067a9a4b74d94c25d6c9181f487dfd6d8c7966ac1d239f4fad65cc07ad3d5c82ee9ab4adfa4b125d231056781632548
     HEAD_REF master
     PATCHES
         0002-cmake-config.patch
-        0007-fix-arm-build.patch
+        0003-simd.patch
         0008-sdl.patch
-        0010-fix_build.patch
 )
 
 vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS

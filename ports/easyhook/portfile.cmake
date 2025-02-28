@@ -56,16 +56,18 @@ foreach(CSPROJ IN ITEMS
         "${CSPROJ}"
         "<TargetFrameworkVersion>v4.0</TargetFrameworkVersion>"
         "<TargetFrameworkVersion>4.7.2</TargetFrameworkVersion>"
+        IGNORE_UNCHANGED
     )
     vcpkg_replace_string(
         "${CSPROJ}"
         "<TargetFrameworkProfile>Client</TargetFrameworkProfile>"
         ""
+        IGNORE_UNCHANGED
     )
 endforeach()
 
-vcpkg_install_msbuild(
-    SOURCE_PATH ${SOURCE_PATH}
+vcpkg_msbuild_install(
+    SOURCE_PATH "${SOURCE_PATH}"
     PROJECT_SUBPATH EasyHook.sln
     TARGET EasyHookDll
     RELEASE_CONFIGURATION "netfx4-Release"
@@ -74,31 +76,19 @@ vcpkg_install_msbuild(
 
 # Remove the mismatch rebuild library
 if (VCPKG_TARGET_ARCHITECTURE STREQUAL "x86")
-    if (NOT VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "debug")
-        file(REMOVE "${CURRENT_PACKAGES_DIR}/debug/lib/AUX_ULIB_x64.LIB")
-    endif()
-    if (NOT VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "release")
-        file(REMOVE "${CURRENT_PACKAGES_DIR}/lib/AUX_ULIB_x64.LIB")
-    endif()
+    file(REMOVE "${CURRENT_PACKAGES_DIR}/debug/lib/AUX_ULIB_x64.LIB")
+    file(REMOVE "${CURRENT_PACKAGES_DIR}/lib/AUX_ULIB_x64.LIB")
 elseif (VCPKG_TARGET_ARCHITECTURE STREQUAL "x64")
-    if (NOT VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "debug")
-        file(REMOVE "${CURRENT_PACKAGES_DIR}/debug/lib/AUX_ULIB_x86.LIB")
-    endif()
-    if (NOT VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "release")
-        file(REMOVE "${CURRENT_PACKAGES_DIR}/lib/AUX_ULIB_x86.LIB")
-    endif()
+    file(REMOVE "${CURRENT_PACKAGES_DIR}/debug/lib/AUX_ULIB_x86.LIB")
+    file(REMOVE "${CURRENT_PACKAGES_DIR}/lib/AUX_ULIB_x86.LIB")
 endif()
 
 # These libraries are useless, so remove.
-if (NOT VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "debug")
-    file(REMOVE "${CURRENT_PACKAGES_DIR}/bin/EasyHook.dll" "${CURRENT_PACKAGES_DIR}/bin/EasyHook.pdb")
-endif()
-if (NOT VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "release")
-    file(REMOVE "${CURRENT_PACKAGES_DIR}/debug/bin/EasyHook.dll" "${CURRENT_PACKAGES_DIR}/debug/bin/EasyHook.pdb")
-endif()
+file(REMOVE "${CURRENT_PACKAGES_DIR}/bin/EasyHook.dll" "${CURRENT_PACKAGES_DIR}/bin/EasyHook.pdb")
+file(REMOVE "${CURRENT_PACKAGES_DIR}/debug/bin/EasyHook.dll" "${CURRENT_PACKAGES_DIR}/debug/bin/EasyHook.pdb")
 
 # Install includes
 file(INSTALL "${SOURCE_PATH}/Public/easyhook.h" DESTINATION "${CURRENT_PACKAGES_DIR}/include/easyhook")
 
 # Handle copyright
-file(INSTALL "${SOURCE_PATH}/LICENSE" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}" RENAME copyright)
+vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/LICENSE")

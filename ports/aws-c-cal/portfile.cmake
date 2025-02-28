@@ -2,7 +2,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO awslabs/aws-c-cal
     REF "v${VERSION}"
-    SHA512 7cb52b0f000e38f4e4af392f67efbece607b2643cb9de8ca267d4416192e2c61f8f0bbcddbdb0f8e511cfe3feb890b00d69427b154c0f5e3853684e895f3b935
+    SHA512 c601a00f5e21bf42bd8e44787182be3805b90ab9c8a23025bed5acac602718548e6236106891b336c4ea81f68a26c3f0a5d33e090246b670efe53229df1fca90
     HEAD_REF master
     PATCHES remove-libcrypto-messages.patch
 )
@@ -12,6 +12,7 @@ vcpkg_cmake_configure(
     OPTIONS
         "-DCMAKE_MODULE_PATH=${CURRENT_INSTALLED_DIR}/share/aws-c-common" # use extra cmake files
         -DBUILD_TESTING=FALSE
+        -DUSE_OPENSSL=ON
 )
 
 vcpkg_cmake_install()

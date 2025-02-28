@@ -1,12 +1,9 @@
-vcpkg_download_distfile(ARCHIVE
-    URLS "https://github.com/BehaviorTree/BehaviorTree.CPP/archive/${VERSION}.tar.gz"
-    FILENAME "BehaviorTree.CPP.${VERSION}.tar.gz"
-    SHA512 4505c4c8798ccbbc02f58320810eb86e791fb6ef57d8c85882e62bd2b509b41e0549dc311ed61926a873b5b956eda979efda488f01d00746e1e8db559f60253c
-)
-
-vcpkg_extract_source_archive(
-    SOURCE_PATH
-    ARCHIVE "${ARCHIVE}"
+vcpkg_from_github(
+    OUT_SOURCE_PATH SOURCE_PATH
+    REPO BehaviorTree/BehaviorTree.CPP
+    REF ${VERSION}
+    SHA512 f3ebbf21a93839b66b3b9d5091906b62c7a7f121f2c296cfdd7be4563924e695ea7464b8ab947ee95039242b3ea0cfe1572a2fd0ae826ab2bbeebd820631f716
+    HEAD_REF master
     PATCHES
         fix-x86_build.patch
 )

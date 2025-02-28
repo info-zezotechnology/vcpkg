@@ -1,15 +1,14 @@
-vcpkg_minimum_required(VERSION 2022-10-12) # for ${VERSION}
-
 vcpkg_from_sourceforge(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO plplot/plplot
-    REF "${VERSION} Source"
+    REF "${VERSION}%20Source"
     FILENAME "plplot-${VERSION}.tar.gz"
     SHA512 54533245569b724a7ef90392cc6e9ae65873e6cbab923df0f841c8b43def5e4307690894c7681802209bd3c8df97f54285310a706428f79b3340cce3207087c8
     PATCHES
         subdirs.patch
         install-interface-include-directories.patch
         use-math-h-nan.patch
+        fix-pc-absolute.patch
 )
 
 vcpkg_check_features(
@@ -54,6 +53,13 @@ vcpkg_cmake_install()
 vcpkg_copy_pdbs()
 vcpkg_cmake_config_fixup(CONFIG_PATH lib/cmake/plplot)
 vcpkg_fixup_pkgconfig()
+
+if("wxwidgets" IN_LIST FEATURES)
+    file(GLOB pkg_files "${CURRENT_PACKAGES_DIR}/debug/lib/pkgconfig/*.pc")
+    foreach(pkg_file IN ITEMS ${pkg_files})
+        vcpkg_replace_string("${pkg_file}" "${prefix}/lib/mswu" "${prefix}/lib/mswud" IGNORE_UNCHANGED)
+    endforeach()
+endif()
 
 file(REMOVE_RECURSE
     "${CURRENT_PACKAGES_DIR}/debug/include"

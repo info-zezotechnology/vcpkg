@@ -4,7 +4,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO google/libphonenumber
     REF "v${VERSION}"
-    SHA512 03bd6a6c4499a7135dbfe30acfd0ede818008a1c9a40068c04c0d3cff5638ea10502e186b625534d9f06cbc69da81c470f7d7308cdd08b41428b1a2e0236f409
+    SHA512 8cc5be5aaaf832288ac011131b41026a44dba702b96a4dbdafcd55e43c870130a089e96187fa4fb8df75e5065185a2eb9af25ece4a7d5b1fcc459b875dceb662
     HEAD_REF master
     PATCHES 
         fix-re2-identifiers.patch
@@ -24,8 +24,11 @@ vcpkg_cmake_configure(
         -DBUILD_TESTING=OFF)
 
 vcpkg_cmake_install()
+vcpkg_cmake_config_fixup(CONFIG_PATH lib/cmake/${PORT})
+
 vcpkg_copy_pdbs()
 
-vcpkg_cmake_config_fixup(CONFIG_PATH lib/cmake/${PORT})
-vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/LICENSE")
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
+
+vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/LICENSE")
+file(INSTALL "${CMAKE_CURRENT_LIST_DIR}/usage" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}")

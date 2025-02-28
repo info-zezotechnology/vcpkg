@@ -1,12 +1,14 @@
 if(EXISTS "${CURRENT_INSTALLED_DIR}/share/mozjpeg/copyright")
     message(FATAL_ERROR "Can't build ${PORT} if mozjpeg is installed. Please remove mozjpeg:${TARGET_TRIPLET}, and try to install ${PORT}:${TARGET_TRIPLET} again.")
 endif()
-
+if(EXISTS "${CURRENT_INSTALLED_DIR}/share/ijg-libjpeg/copyright")
+    message(FATAL_ERROR "Can't build ${PORT} if ijg-libjpeg is installed. Please remove ijg-libjpeg:${TARGET_TRIPLET}, and try to install ${PORT}:${TARGET_TRIPLET} again.")
+endif()
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO libjpeg-turbo/libjpeg-turbo
     REF "${VERSION}"
-    SHA512 bcd946eed0fb3712eae2485d300d5e2b84596b1c8cfd4e944902bb141125d411b727024f054e2ad6c23855d06a02dcb926696f05cb107869a7b81814d4cfcaeb
+    SHA512 5712d318e222f1ffcd2f748b0f2c32b3859253a4ed4e13ae134f4445e0ca06efc258c7653b6924b39815ae078f6a9177e098c89684d2c886161a0a4118122e8d
     HEAD_REF master
     PATCHES
         add-options-for-exes-docs-headers.patch
@@ -14,7 +16,9 @@ vcpkg_from_github(
         workaround_cmake_system_processor.patch
 )
 
-if(VCPKG_TARGET_ARCHITECTURE STREQUAL "arm" OR VCPKG_TARGET_ARCHITECTURE STREQUAL "arm64" OR (VCPKG_CMAKE_SYSTEM_NAME AND NOT VCPKG_CMAKE_SYSTEM_NAME STREQUAL "WindowsStore"))
+if(VCPKG_TARGET_ARCHITECTURE STREQUAL "wasm32")
+    set(LIBJPEGTURBO_SIMD -DWITH_SIMD=OFF)
+elseif(VCPKG_TARGET_ARCHITECTURE STREQUAL "arm" OR VCPKG_TARGET_ARCHITECTURE STREQUAL "arm64" OR (VCPKG_CMAKE_SYSTEM_NAME AND NOT VCPKG_CMAKE_SYSTEM_NAME STREQUAL "WindowsStore"))
     set(LIBJPEGTURBO_SIMD -DWITH_SIMD=ON -DNEON_INTRINSICS=ON)
 else()
     set(LIBJPEGTURBO_SIMD -DWITH_SIMD=ON)
@@ -74,15 +78,15 @@ if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
     
     if (EXISTS "${CURRENT_PACKAGES_DIR}/share/${PORT}/libjpeg-turboTargets-debug.cmake")
         vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/share/${PORT}/libjpeg-turboTargets-debug.cmake"
-            "jpeg-static${VCPKG_TARGET_STATIC_LIBRARY_SUFFIX}" "jpeg${VCPKG_TARGET_STATIC_LIBRARY_SUFFIX}")
+            "jpeg-static${VCPKG_TARGET_STATIC_LIBRARY_SUFFIX}" "jpeg${VCPKG_TARGET_STATIC_LIBRARY_SUFFIX}" IGNORE_UNCHANGED)
         vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/share/${PORT}/libjpeg-turboTargets-debug.cmake"
-            "turbojpeg-static${VCPKG_TARGET_STATIC_LIBRARY_SUFFIX}" "turbojpeg${VCPKG_TARGET_STATIC_LIBRARY_SUFFIX}")
+            "turbojpeg-static${VCPKG_TARGET_STATIC_LIBRARY_SUFFIX}" "turbojpeg${VCPKG_TARGET_STATIC_LIBRARY_SUFFIX}" IGNORE_UNCHANGED)
     endif()
     if (EXISTS "${CURRENT_PACKAGES_DIR}/share/${PORT}/libjpeg-turboTargets-release.cmake")
         vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/share/${PORT}/libjpeg-turboTargets-release.cmake"
-            "jpeg-static${VCPKG_TARGET_STATIC_LIBRARY_SUFFIX}" "jpeg${VCPKG_TARGET_STATIC_LIBRARY_SUFFIX}")
+            "jpeg-static${VCPKG_TARGET_STATIC_LIBRARY_SUFFIX}" "jpeg${VCPKG_TARGET_STATIC_LIBRARY_SUFFIX}" IGNORE_UNCHANGED)
         vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/share/${PORT}/libjpeg-turboTargets-release.cmake"
-            "turbojpeg-static${VCPKG_TARGET_STATIC_LIBRARY_SUFFIX}" "turbojpeg${VCPKG_TARGET_STATIC_LIBRARY_SUFFIX}")
+            "turbojpeg-static${VCPKG_TARGET_STATIC_LIBRARY_SUFFIX}" "turbojpeg${VCPKG_TARGET_STATIC_LIBRARY_SUFFIX}" IGNORE_UNCHANGED)
     endif()
 endif()
 

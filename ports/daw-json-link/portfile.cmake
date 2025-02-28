@@ -3,10 +3,11 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO beached/daw_json_link
     REF "v${VERSION}"
-    SHA512 a1cb2ea554d7cd3be5ad66c46697afe05edca15e4a76b77c427dcf85e18b858db107d29636afba1d9b57afb362c68141c917215d6064aab357f5186ea12ad267
-    HEAD_REF master
+    SHA512 1a74a943b06dd9c058ba1be6352da1c2f7b9a3a6fe95f298ad69f72aa092a912c1aa971952e8b123b61f01b3345269f9607675666bf58293cd91023a86431ac3
+    HEAD_REF release
 )
 
+file(REMOVE "${SOURCE_PATH}/include/daw/daw_tuple_forward.h")
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}"
     OPTIONS

@@ -7,22 +7,14 @@ if(VCPKG_TARGET_IS_EMSCRIPTEN)
     vcpkg_check_linkage(ONLY_STATIC_LIBRARY)
 endif()
 
-if (NOT "${VERSION}" MATCHES [[^([0-9]+)\.([0-9]+)\.([0-9]+)$]])
-    message(FATAL_ERROR "Version regex did not match.")
-endif()
-set(OPENSSL_VERSION_MAJOR "${CMAKE_MATCH_1}")
-set(OPENSSL_VERSION_MINOR "${CMAKE_MATCH_2}")
-set(OPENSSL_VERSION_FIX "${CMAKE_MATCH_3}")
-configure_file("${CMAKE_CURRENT_LIST_DIR}/vcpkg-cmake-wrapper.cmake.in" "${CURRENT_PACKAGES_DIR}/share/${PORT}/vcpkg-cmake-wrapper.cmake" @ONLY)
-
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO openssl/openssl
     REF "openssl-${VERSION}"
-    SHA512 7073fd82ce17a63d77babb6a184c14c7341e4b1f8f5a6caeaa1a6d9c78d6a12bb6d9cbad5d39d16412be6d1c12eac60364644664a8e26e3940476973ba07fd19
+    SHA512 c66ac5bb4ba90cb62176e39dad1534963fc84fac3db9774d1ab4999ec3c4f796c63e13036c1f8b36f3077d7a1ee0db54d677de3dae32926c14af128cc3993e14
     PATCHES
-        disable-apps.patch
-        disable-install-docs.patch
+        cmake-config.patch
+        command-line-length.patch
         script-prefix.patch
         windows/install-layout.patch
         windows/install-pdbs.patch
@@ -35,9 +27,8 @@ vcpkg_from_github(
 vcpkg_list(SET CONFIGURE_OPTIONS
     enable-static-engine
     enable-capieng
-    no-ssl3
-    no-weak-ssl-ciphers
     no-tests
+    no-docs
 )
 
 set(INSTALL_FIPS "")
@@ -56,6 +47,15 @@ if(NOT "tools" IN_LIST FEATURES)
     vcpkg_list(APPEND CONFIGURE_OPTIONS no-apps)
 endif()
 
+if("weak-ssl-ciphers" IN_LIST FEATURES)
+    vcpkg_list(APPEND CONFIGURE_OPTIONS enable-weak-ssl-ciphers)
+endif()
+
+if("ssl3" IN_LIST FEATURES)
+    vcpkg_list(APPEND CONFIGURE_OPTIONS enable-ssl3)
+    vcpkg_list(APPEND CONFIGURE_OPTIONS enable-ssl3-method)
+endif()
+
 if(DEFINED OPENSSL_USE_NOPINSHARED)
     vcpkg_list(APPEND CONFIGURE_OPTIONS no-pinshared)
 endif()
@@ -72,4 +72,13 @@ else()
 endif()
 
 file(INSTALL "${CMAKE_CURRENT_LIST_DIR}/usage" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}")
-file(INSTALL "${SOURCE_PATH}/LICENSE.txt" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}" RENAME copyright)
+
+if (NOT "${VERSION}" MATCHES [[^([0-9]+)\.([0-9]+)\.([0-9]+)$]])
+    message(FATAL_ERROR "Version regex did not match.")
+endif()
+set(OPENSSL_VERSION_MAJOR "${CMAKE_MATCH_1}")
+set(OPENSSL_VERSION_MINOR "${CMAKE_MATCH_2}")
+set(OPENSSL_VERSION_FIX "${CMAKE_MATCH_3}")
+configure_file("${CMAKE_CURRENT_LIST_DIR}/vcpkg-cmake-wrapper.cmake.in" "${CURRENT_PACKAGES_DIR}/share/${PORT}/vcpkg-cmake-wrapper.cmake" @ONLY)
+
+vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/LICENSE.txt")

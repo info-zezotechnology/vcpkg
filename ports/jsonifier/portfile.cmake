@@ -2,16 +2,16 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO realtimechris/jsonifier
     REF "v${VERSION}"
-    SHA512 d06000ed5c9311e840fee37a85085d9f8712fc65d83f6e52ae08f31bdcba80309064ccb1978e5ca8d76e2c848f7506e5a1830e2536ba38955f5bb45866664cab
+    SHA512 d6465426218429a1597fa66b2d8cb912bce00831d663be7b8ea406267537dd6f455c1b99c3c8551dd8165a75d9dbe42fefedbad5979eb45d01e0286f08daad96
     HEAD_REF main
 )
+
+set(VCPKG_BUILD_TYPE release) # header-only
 
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}"
 )
 
 vcpkg_cmake_install()
-
-file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug")
 
 vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/License.md")
